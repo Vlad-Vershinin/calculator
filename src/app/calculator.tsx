@@ -4,7 +4,8 @@ import { useActionState, useState } from "react";
 import { calculate } from "./actions";
 import styles from "./page.module.css";
 
-const initialState = { result: "", equation: "", error: "" };
+const initialState = { result: "", equation: "", error: "", angleUnit: "degrees" };
+const trigKeys = [["sin(", "sin"], ["cos(", "cos"], ["tan(", "tan"], ["cot(", "cot"]] as const;
 const keys = [
   ["clear", "C", "utility"], ["(", "(", "utility"], [")", ")", "utility"], ["backspace", "⌫", "utility"],
   ["7", "7", "number"], ["8", "8", "number"], ["9", "9", "number"], ["/", "÷", "operator"],
@@ -19,8 +20,9 @@ function showExpression(value: string) {
 
 export function Calculator() {
   const [expression, setExpression] = useState("");
+  const [angleUnit, setAngleUnit] = useState("degrees");
   const [state, formAction, pending] = useActionState(calculate, initialState);
-  const calculationIsCurrent = state.equation === expression;
+  const calculationIsCurrent = state.equation === expression && state.angleUnit === angleUnit;
   const display = calculationIsCurrent ? state.error || state.result : showExpression(expression);
 
   function enter(command: string) {
@@ -38,6 +40,15 @@ export function Calculator() {
           <small>{calculationIsCurrent && state.result ? `${showExpression(state.equation)} =` : "\u00a0"}</small>
           <strong>{pending ? "Вычисление…" : display || "0"}</strong>
         </output>
+        <div className={styles.scientific}>
+          <select name="angleUnit" value={angleUnit} onChange={(event) => setAngleUnit(event.target.value)} aria-label="Единица угла">
+            <option value="degrees">DEG</option>
+            <option value="radians">RAD</option>
+          </select>
+          {trigKeys.map(([command, label]) => (
+            <button type="button" className={`${styles.key} ${styles.utility}`} onClick={() => enter(command)} key={command}>{label}</button>
+          ))}
+        </div>
         <div className={styles.keypad}>
           {keys.map(([command, label, kind]) => (
             <button type="button" className={`${styles.key} ${styles[kind]}`} onClick={() => enter(command)} key={command}>{label}</button>

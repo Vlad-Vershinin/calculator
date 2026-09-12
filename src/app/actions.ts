@@ -1,11 +1,11 @@
 "use server";
 
-type CalculationState = { result: string; equation: string; error: string };
+type CalculationState = { result: string; equation: string; error: string; angleUnit: string };
 
 class ExpressionParser {
   private position = 0;
 
-  constructor(private readonly source: string) {}
+  constructor(private readonly source: string, private readonly useDegrees: boolean) {}
 
   parse() {
     const value = this.parseExpression();
@@ -39,6 +39,23 @@ class ExpressionParser {
     if (this.peek() === "+") { this.take(); return this.parseFactor(); }
     if (this.peek() === "-") { this.take(); return -this.parseFactor(); }
 
+    const functionName = ["sin", "cos", "tan", "cot"].find((name) =>
+      this.source.startsWith(name, this.position),
+    );
+    if (functionName) {
+      this.position += functionName.length;
+      if (this.take() !== "(") throw new Error("После функции нужна скобка");
+      const argument = this.parseExpression();
+      if (this.take() !== ")") throw new Error("Не хватает закрывающей скобки");
+      const angle = this.useDegrees ? argument * Math.PI / 180 : argument;
+      if (functionName === "tan" && Math.abs(Math.cos(angle)) < 1e-12) throw new Error("Тангенс не определён");
+      if (functionName === "cot" && Math.abs(Math.sin(angle)) < 1e-12) throw new Error("Котангенс не определён");
+      if (functionName === "sin") return Math.sin(angle);
+      if (functionName === "cos") return Math.cos(angle);
+      if (functionName === "tan") return Math.tan(angle);
+      return Math.cos(angle) / Math.sin(angle);
+    }
+
     if (this.peek() === "(") {
       this.take();
       const value = this.parseExpression();
@@ -64,14 +81,15 @@ function formatResult(value: number) {
 
 export async function calculate(_previousState: CalculationState, formData: FormData): Promise<CalculationState> {
   const value = String(formData.get("expression") ?? "");
-  const expression = /^[0-9+\-*/().]{1,100}$/.test(value) ? value : "";
-  if (!expression) return { result: "", equation: "", error: "Введите выражение" };
+  const angleUnit = formData.get("angleUnit") === "radians" ? "radians" : "degrees";
+  const expression = /^[0-9+\-*/().a-z]{1,100}$/.test(value) ? value : "";
+  if (!expression) return { result: "", equation: "", error: "Введите выражение", angleUnit };
 
   try {
-    const result = new ExpressionParser(expression).parse();
-    return { result: formatResult(result), equation: expression, error: "" };
+    const result = new ExpressionParser(expression, angleUnit === "degrees").parse();
+    return { result: formatResult(result), equation: expression, error: "", angleUnit };
   } catch (error) {
     const message = error instanceof Error ? error.message : "Не удалось вычислить";
-    return { result: "", equation: expression, error: message };
+    return { result: "", equation: expression, error: message, angleUnit };
   }
 }

@@ -7,6 +7,9 @@
 .display small { min-height: 20px; max-width: 100%; overflow: hidden; color: #666; font-size: .85rem; text-overflow: ellipsis; white-space: nowrap; }
 .display strong { max-width: 100%; overflow: hidden; font-size: 2.4rem; font-weight: 600; line-height: 1.2; text-overflow: ellipsis; white-space: nowrap; }
 .error strong { color: #a4262c; font-size: 1.1rem; white-space: normal; text-align: right; }
+.scientific { display: grid; grid-template-columns: repeat(5,1fr); gap: 3px; }
+.scientific select { min-width: 0; border: 1px solid #dfdfdf; border-radius: 4px; color: #1f1f1f; background: #e7e7e7; font: inherit; font-size: .72rem; text-align: center; cursor: pointer; }
+.scientific .key { min-height: 38px; font-size: .85rem; }
 .keypad { display: grid; grid-template-columns: repeat(4,1fr); gap: 3px; }
 .key { min-height: 54px; border: 1px solid #dfdfdf; border-radius: 4px; color: #1f1f1f; font: inherit; font-size: 1rem; cursor: pointer; }
 .number { background: #fff; font-size: 1.15rem; font-weight: 600; }
