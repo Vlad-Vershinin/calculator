@@ -2,6 +2,9 @@
 .calculator { width: min(100%, 340px); padding: 10px; color: #1f1f1f; background: #f3f3f3; border: 1px solid #cfcfcf; border-radius: 8px; box-shadow: 0 8px 24px rgba(0,0,0,.16); font-family: "Segoe UI", Arial, sans-serif; }
 .calculator header { display: flex; align-items: center; min-height: 40px; padding: 0 6px; }
 .calculator h1 { font-size: 1rem; font-weight: 600; }
+.modes { display: grid; grid-template-columns: 1fr 1fr; gap: 3px; margin: 0 0 8px; padding: 3px; border-radius: 5px; background: #e7e7e7; }
+.modes button { min-height: 34px; border: 0; border-radius: 4px; color: #444; background: transparent; font: inherit; font-size: .82rem; cursor: pointer; }
+.modes .selectedMode { color: #1f1f1f; background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,.16); }
 .form { display: grid; gap: 4px; }
 .display { min-height: 112px; display: flex; flex-direction: column; align-items: flex-end; justify-content: flex-end; padding: 12px 8px 16px; overflow: hidden; }
 .display small { min-height: 20px; max-width: 100%; overflow: hidden; color: #666; font-size: .85rem; text-overflow: ellipsis; white-space: nowrap; }
