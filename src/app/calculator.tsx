@@ -52,6 +52,7 @@ export function Calculator() {
   return (
     <section className={styles.calculator} aria-label="Калькулятор">
       <header><h1>Калькулятор</h1></header>
+      <a className={styles.filesLink} href="/files">Файлы для скачивания</a>
       <div className={styles.modes} role="group" aria-label="Режим вычисления">
         <button type="button" className={mode === "client" ? styles.selectedMode : ""} aria-pressed={mode === "client"} onClick={() => setMode("client")}>Клиентский</button>
         <button type="button" className={mode === "server" ? styles.selectedMode : ""} aria-pressed={mode === "server"} onClick={() => setMode("server")}>Серверный</button>
